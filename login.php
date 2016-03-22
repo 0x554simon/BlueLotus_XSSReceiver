@@ -3,6 +3,7 @@ define("IN_XSS_PLATFORM", true);
 
 require_once("load.php");
 require_once("functions.php");
+require_once("dio.php");
 
 //CSP开启
 header("Content-Security-Policy: default-src 'self'; object-src 'none'; frame-src 'none'");
@@ -48,34 +49,6 @@ if (!isset($forbiddenIPList[$ip]) || $forbiddenIPList[$ip] <= 5) {
 } else
     $is_pass_wrong = true;
 
-function loadForbiddenIPList() {
-    $logfile = DATA_PATH . '/forbiddenIPList.dat';
-    !file_exists($logfile) && @touch($logfile);
-    $str = @file_get_contents($logfile);
-    if ($str === false)
-        return array();
-    
-    $str = decrypt($str);
-    
-    
-    if ($str != '') {
-        $result = json_decode($str, true);
-        if ($result != null)
-            return $result;
-        else
-            return array();
-    } else
-        return array();
-}
-
-function saveForbiddenIPList($forbiddenIPList) {
-    $logfile = DATA_PATH . '/forbiddenIPList.dat';
-    !file_exists($logfile) && @touch($logfile);
-    $str = json_encode($forbiddenIPList);
-    $str = encrypt($str);
-    @file_put_contents($logfile, $str);
-}
-
 /*
 生成密码
 php -r "$salt='!KTMdg#^^I6Z!deIVR#SgpAI6qTN7oVl';$key='bluelotus';$key=md5($salt.$key.$salt);$key=md5($salt.$key.$salt);$key=md5($salt.$key.$salt);echo $key;"
@@ -107,11 +80,11 @@ function generate_password($length = 32) {
     <head>
         <meta charset="utf-8" />
 		<title>登录</title>
-		<link rel="stylesheet" href='static/css/font-awesome.css' type="text/css" >
-		<link rel="stylesheet" href="static/css/login.css" type="text/css" />
+		<link rel="stylesheet" href='static/css/font-awesome.min.css' type="text/css" >
+		<link rel="stylesheet" href="static/css/login.min.css" type="text/css" />
 		
         <script type="text/javascript" src="static/js/jquery.min.js" ></script>
-        <script type="text/javascript" src="static/js/login.js" ></script>
+        <script type="text/javascript" src="static/js/login.min.js" ></script>
 		<?php
 if ($is_pass_wrong)
     echo '<script type="text/javascript" src="static/js/pass_is_wrong.js" ></script>';
